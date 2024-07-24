@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import IntroSection from "../components/ui/IntroSection/intro-section";
+import LoginSection from "../components/ui/LoginSection/login-section";
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { IconButton } from "@mui/material";
 
 declare global {
     interface Window {
@@ -9,36 +13,37 @@ declare global {
 }
 
 const Login: React.FC = () => {
-    const { handleGoogle, loading, error } = useFetch(
-        "http://localhost:5152/login"
-    );
+    // const { handleGoogle, loading, error } = useFetch(
+    //     "http://localhost:5152/login"
+    // );
 
-    useEffect(() => {
-        if (window.google) {
-            window.google.accounts.id.initialize({
-                client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID as string,
-                callback: handleGoogle,
-            });
+    // useEffect(() => {
+    //     if (window.google) {
+    //         window.google.accounts.id.initialize({
+    //             client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID as string,
+    //             callback: handleGoogle,
+    //         });
 
-            window.google.accounts.id.renderButton(document.getElementById("loginDiv"), {
-                theme: "filled_black",
-                text: "signin_with",
-                shape: "pill",
-            });
+    //         window.google.accounts.id.renderButton(document.getElementById("loginDiv"), {
+    //             theme: "filled_black",
+    //             text: "signin_with",
+    //             shape: "pill",
+    //         });
 
-            // window.google.accounts.id.prompt()
-        }
-    }, [handleGoogle]);
+    //         // window.google.accounts.id.prompt()
+    //     }
+    // }, [handleGoogle]);
 
     return (
         <>
-            <nav style={{ padding: "2rem" }}>
+            <IconButton sx={{ width: "20px", height: "20px", padding: "1.5rem" }}> <Link to="/"><KeyboardBackspaceIcon /></Link></IconButton>
+            {/* <nav>
                 <Link to="/">Go Back</Link>
-            </nav>
-            <header style={{ textAlign: "center" }}>
+            </nav> */}
+            {/* <header style={{ textAlign: "center" }}>
                 <h1>Login to continue</h1>
-            </header>
-            <main
+            </header> */}
+            {/* <main
                 style={{
                     display: "flex",
                     justifyContent: "center",
@@ -48,8 +53,18 @@ const Login: React.FC = () => {
             >
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 {loading ? <div>Loading....</div> : <div id="loginDiv"></div>}
-            </main>
-            <footer></footer>
+            </main> */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4" >
+                <div className="md:col-span-6">
+                    <IntroSection />
+                </div>
+
+                <div className="md:col-span-6">
+                    <LoginSection />
+                </div>
+            </div>
+
+
         </>
     );
 };
