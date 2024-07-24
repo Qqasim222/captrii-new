@@ -1,19 +1,26 @@
 import React from "react";
 
-const Home = ({ user }) => {
+interface User {
+    email?: string;
+}
+
+interface HomeProps {
+    user: User;
+}
+
+const Home: React.FC<HomeProps> = ({ user }) => {
     const logout = () => {
         localStorage.removeItem("user");
         window.location.reload();
     };
+
     return (
         <div style={{ textAlign: "center", margin: "3rem" }}>
             <h1>Dear {user?.email}</h1>
-
             <p>
                 You are viewing this page because you are logged in or you just signed
                 up
             </p>
-
             <div>
                 <button
                     onClick={logout}

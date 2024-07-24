@@ -2,30 +2,31 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 
-// https://developers.google.com/identity/gsi/web/reference/js-reference
+declare global {
+    interface Window {
+        google: any;
+    }
+}
 
-const SignUp = () => {
+const SignUp: React.FC = () => {
     const { handleGoogle, loading, error } = useFetch(
         "http://localhost:5152/signup"
     );
 
     useEffect(() => {
-        /* global google */
         if (window.google) {
-            google.accounts.id.initialize({
-                client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+            window.google.accounts.id.initialize({
+                client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID as string,
                 callback: handleGoogle,
             });
 
-            google.accounts.id.renderButton(document.getElementById("signUpDiv"), {
-                // type: "standard",
+            window.google.accounts.id.renderButton(document.getElementById("signUpDiv"), {
                 theme: "filled_black",
-                // size: "small",
                 text: "continue_with",
                 shape: "pill",
             });
 
-            // google.accounts.id.prompt()
+            // window.google.accounts.id.prompt()
         }
     }, [handleGoogle]);
 

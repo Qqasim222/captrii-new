@@ -1,13 +1,17 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./screens/Landing";
 import Login from "./screens/Login";
 import SignUp from "./screens/Signup";
 import Home from "./screens/Home";
 
-const App = () => {
-  const [user, setUser] = useState({});
+interface User {
+  email?: string;
+  [key: string]: any; // Allows other properties as well
+}
+
+const App: React.FC = () => {
+  const [user, setUser] = useState<User>({});
 
   useEffect(() => {
     const theUser = localStorage.getItem("user");
