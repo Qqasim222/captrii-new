@@ -4,6 +4,8 @@ import Landing from "./screens/Landing";
 import Login from "./screens/Login";
 import SignUp from "./screens/Signup";
 import Home from "./screens/Home";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface User {
   email?: string;
@@ -14,7 +16,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User>({});
 
   useEffect(() => {
-    const theUser = localStorage.getItem("user");
+    const theUser = sessionStorage.getItem("user");
 
     if (theUser && !theUser.includes("undefined")) {
       setUser(JSON.parse(theUser));
@@ -23,6 +25,7 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
+      <ToastContainer />
       <Routes>
         <Route
           path="/"

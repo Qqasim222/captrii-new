@@ -15,3 +15,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#loginDiv {
+  width: "100%";
+  display: flex;
+  justify-content: center;
+  /* Center the button horizontally if needed */
+}
