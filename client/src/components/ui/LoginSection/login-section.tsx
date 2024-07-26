@@ -13,7 +13,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
   const [isGetQuestion, setIsGetQuestion] = useState<boolean>(false);
 
   const { handleGoogle, loading, error } = useFetch(
-    `${process.env.REACT_APP_API_URL}/users/login`
+    `${process.env.REACT_APP_API_URL}/users/signin`
   );
 
   useEffect(() => {
