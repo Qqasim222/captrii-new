@@ -16,6 +16,10 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
     `${process.env.REACT_APP_API_URL}/users/login`
   );
 
+  const handleLogin = () => {
+    window.location.href = "http://localhost:5152/auth/microsoft";
+  };
+
   useEffect(() => {
     if (window.google) {
       window.google.accounts.id.initialize({
@@ -130,7 +134,11 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
             </defs>
           </svg>
         </div>
-        <div id="microsoft-signin-button" className="text-sm mb-6">
+        <div
+          id="microsoft-signin-button"
+          className="text-sm mb-6"
+          onClick={handleLogin}
+        >
           <button
             id="msal-signin"
             className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100"
