@@ -22,7 +22,10 @@ const useFetch = (url: string): UseFetchReturn => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ credential: response.credential }),
+        body: JSON.stringify({
+          credential: response.credential,
+          provider: "google",
+        }),
       });
 
       setLoading(false);

@@ -10,7 +10,7 @@ declare global {
 
 const SignUp: React.FC = () => {
   const { handleGoogle, loading, error } = useFetch(
-    `${process.env.REACT_APP_API_URL}/users/signup`
+    `${process.env.REACT_APP_API_URL}`
   );
 
   useEffect(() => {

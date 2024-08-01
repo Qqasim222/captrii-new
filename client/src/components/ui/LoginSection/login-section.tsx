@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import useFetch from "../../../hooks/useFetch";
 import { width } from "@mui/system";
 import { toast } from "react-toastify";
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from "../../../config/authConfig";
 
 // TypeScript types for props and state.
 interface LoginSectionProps {}
@@ -11,14 +13,60 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [isGetQuestion, setIsGetQuestion] = useState<boolean>(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [newToken, setNewToken] = useState<string | null>(null);
+  const { instance, accounts } = useMsal();
 
   const { handleGoogle, loading, error } = useFetch(
-    `${process.env.REACT_APP_API_URL}/users/login`
+    `${process.env.REACT_APP_API_URL}`
   );
 
+  // const handleLogin = () => {
+  //   instance
+  //     .loginPopup(loginRequest)
+  //     .then((response) => {
+  //       setAccessToken(response.accessToken);
+  //     })
+  //     .catch((e) => {
+  //       console.error(e);
+  //     });
+  // };
+
   const handleLogin = () => {
-    window.location.href = "http://localhost:5152/auth/microsoft";
+    instance
+      .loginPopup(loginRequest)
+      .then((response) => {
+        setAccessToken(response.accessToken);
+        console.log("Access Token:", response.accessToken);
+
+        // Send the access token to the dummy API endpoint
+        fetch(`${process.env.REACT_APP_API_URL}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            credential: response.accessToken,
+            provider: "microsoft",
+          }),
+        })
+          .then((res) => res.json()) // Assuming the new token is sent as JSON
+          .then((data) => {
+            const newAccessToken = data.newAccessToken; // Adjust based on your API response structure
+            setNewToken(newAccessToken);
+            sessionStorage.setItem("newAccessToken", newAccessToken);
+            console.log("New Token stored in sessionStorage:", newAccessToken);
+          })
+          .catch((error) => {
+            console.error("Error sending token to API:", error);
+          });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   };
+
+  console.log("Access Token:", accessToken);
 
   useEffect(() => {
     if (window.google) {
