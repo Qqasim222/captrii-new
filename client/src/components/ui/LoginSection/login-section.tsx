@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import useFetch from "../../../hooks/useFetch";
 import { width } from "@mui/system";
 import { toast } from "react-toastify";
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from "../../../config/authConfig";
+import usePost from "../../../hooks/usePost";
 
 // TypeScript types for props and state.
 interface LoginSectionProps {}
@@ -11,10 +14,31 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [isGetQuestion, setIsGetQuestion] = useState<boolean>(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [newToken, setNewToken] = useState<string | null>(null);
+  const { instance, accounts } = useMsal();
 
   const { handleGoogle, loading, error } = useFetch(
-    `${process.env.REACT_APP_API_URL}/users/login`
+    `${process.env.REACT_APP_API_URL}`
   );
+  const { handleMicrosoft, isLoading, isError } = usePost(
+    `${process.env.REACT_APP_API_URL}`
+  );
+  const handleLogin = async () => {
+    try {
+      // const response = await instance.loginPopup(loginRequest);
+      const response = await instance.loginPopup({
+        ...loginRequest,
+        prompt: "select_account", // Forces the account selection prompt
+      });
+      await handleMicrosoft({ accessToken: response.accessToken });
+    } catch (e) {
+      console.error("Error during Microsoft login:", e);
+      
+    }
+  };
+
+  console.log("Access Token:", accessToken);
 
   useEffect(() => {
     if (window.google) {
@@ -33,10 +57,6 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
           width: "100%",
         }
       );
-      // window.google.accounts.id.prompt()
-      if (error) {
-        toast.error(error);
-      }
     }
   }, [handleGoogle]);
 
@@ -130,7 +150,11 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
             </defs>
           </svg>
         </div>
-        <div id="microsoft-signin-button" className="text-sm mb-6">
+        <div
+          id="microsoft-signin-button"
+          className="text-sm mb-6"
+          onClick={handleLogin}
+        >
           <button
             id="msal-signin"
             className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100"
