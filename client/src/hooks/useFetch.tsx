@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for react-toastify
 
 interface GoogleResponse {
   credential: string;
@@ -38,7 +40,9 @@ const useFetch = (url: string): UseFetchReturn => {
         throw new Error(data?.message || data);
       }
     } catch (error: any) {
+      setLoading(false);
       setError(error.message);
+      toast.error(error.message); // Show error using toast
     }
   };
 

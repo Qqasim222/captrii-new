@@ -11,6 +11,7 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ user }) => {
   const logout = () => {
     sessionStorage.removeItem("user");
+    sessionStorage.removeItem("ms_user");
     window.location.reload();
   };
 

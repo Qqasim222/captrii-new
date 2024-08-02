@@ -5,6 +5,7 @@ import { width } from "@mui/system";
 import { toast } from "react-toastify";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../../config/authConfig";
+import usePost from "../../../hooks/usePost";
 
 // TypeScript types for props and state.
 interface LoginSectionProps {}
@@ -20,50 +21,21 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
   const { handleGoogle, loading, error } = useFetch(
     `${process.env.REACT_APP_API_URL}`
   );
-
-  // const handleLogin = () => {
-  //   instance
-  //     .loginPopup(loginRequest)
-  //     .then((response) => {
-  //       setAccessToken(response.accessToken);
-  //     })
-  //     .catch((e) => {
-  //       console.error(e);
-  //     });
-  // };
-
-  const handleLogin = () => {
-    instance
-      .loginPopup(loginRequest)
-      .then((response) => {
-        setAccessToken(response.accessToken);
-        console.log("Access Token:", response.accessToken);
-
-        // Send the access token to the dummy API endpoint
-        fetch(`${process.env.REACT_APP_API_URL}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            credential: response.accessToken,
-            provider: "microsoft",
-          }),
-        })
-          .then((res) => res.json()) // Assuming the new token is sent as JSON
-          .then((data) => {
-            const newAccessToken = data.newAccessToken; // Adjust based on your API response structure
-            setNewToken(newAccessToken);
-            sessionStorage.setItem("newAccessToken", newAccessToken);
-            console.log("New Token stored in sessionStorage:", newAccessToken);
-          })
-          .catch((error) => {
-            console.error("Error sending token to API:", error);
-          });
-      })
-      .catch((e) => {
-        console.error(e);
+  const { handleMicrosoft, isLoading, isError } = usePost(
+    `${process.env.REACT_APP_API_URL}`
+  );
+  const handleLogin = async () => {
+    try {
+      // const response = await instance.loginPopup(loginRequest);
+      const response = await instance.loginPopup({
+        ...loginRequest,
+        prompt: "select_account", // Forces the account selection prompt
       });
+      await handleMicrosoft({ accessToken: response.accessToken });
+    } catch (e) {
+      console.error("Error during Microsoft login:", e);
+      
+    }
   };
 
   console.log("Access Token:", accessToken);
@@ -85,10 +57,6 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
           width: "100%",
         }
       );
-      // window.google.accounts.id.prompt()
-      if (error) {
-        toast.error(error);
-      }
     }
   }, [handleGoogle]);
 

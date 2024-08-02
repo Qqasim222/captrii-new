@@ -17,9 +17,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const theUser = sessionStorage.getItem("user");
+    const msUser = sessionStorage.getItem("ms_user");
 
     if (theUser && !theUser.includes("undefined")) {
       setUser(JSON.parse(theUser));
+    }
+
+    if (msUser && !msUser.includes("undefined")) {
+      setUser(JSON.parse(msUser));
     }
   }, []);
 
@@ -29,7 +34,7 @@ const App: React.FC = () => {
       <Routes>
         <Route
           path="/"
-          element={user?.email ? <Navigate to="/home" /> : <Landing />}
+          element={<Navigate to="/login" />}
         />
         <Route
           path="/signup"
@@ -41,7 +46,7 @@ const App: React.FC = () => {
         />
         <Route
           path="/home"
-          element={user?.email ? <Home user={user} /> : <Navigate to="/" />}
+          element={user?.email ? <Home user={user} /> : <Navigate to="/login" />}
         />
       </Routes>
     </BrowserRouter>
