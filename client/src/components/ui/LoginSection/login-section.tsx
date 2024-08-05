@@ -157,21 +157,28 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
         </div>
 
         <div id="apple-signin-button" className="text-sm mb-6">
-          <button
-            id="apple-signin"
-            className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
-              alt="Apple Icon"
-              className="mr-2 w-6 h-6"
-            />
-            <span>Continue with Apple</span>
-          </button>
+            <button
+              id="apple-signin"
+              className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100"
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+                alt="Apple Icon"
+                className="mr-2 w-6 h-6"
+              />
+              <span>Continue with Apple</span>
+            </button>
         </div>
         <div className=" w-full">
           <div className="w-full" id="loginDiv"></div>
         </div>
+
+        {/* <div id="fake-button" className="text-sm" >
+          <button id="fake-google-signin-button" className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100">
+            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Icon" className="mr-2 w-6 h-6" />
+            <span>Continue with Google</span>
+          </button>
+        </div> */}
 
         <div className="flex justify-center items-center mb-4">
           <hr className="border-t-1 border-gray-300 w-[50%] mr-3"></hr>
