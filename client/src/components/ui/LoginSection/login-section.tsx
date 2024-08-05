@@ -1,56 +1,43 @@
-"use client";
 import React, { useState, useEffect } from "react";
-import useFetch from "../../../hooks/useFetch";
-import { width } from "@mui/system";
 import { toast } from "react-toastify";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../../config/authConfig";
-import usePost from "../../../hooks/usePost";
+import useAuth from "../../../hooks/useAuth";
 
 // TypeScript types for props and state.
-interface LoginSectionProps {}
+interface LoginSectionProps { }
 
 const LoginSection: React.FC<LoginSectionProps> = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [isGetQuestion, setIsGetQuestion] = useState<boolean>(false);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [newToken, setNewToken] = useState<string | null>(null);
-  const { instance, accounts } = useMsal();
+  const { instance } = useMsal();
+  const { handleAuth } = useAuth(`${process.env.REACT_APP_API_URL}`);
 
-  const { handleGoogle, loading, error } = useFetch(
-    `${process.env.REACT_APP_API_URL}`
-  );
-  const { handleMicrosoft, isLoading, isError } = usePost(
-    `${process.env.REACT_APP_API_URL}`
-  );
-  const handleLogin = async () => {
+  const handleMicrosoftLogin = async () => {
     try {
-      // const response = await instance.loginPopup(loginRequest);
       const response = await instance.loginPopup({
         ...loginRequest,
-        prompt: "select_account", // Forces the account selection prompt
+        prompt: "select_account",
       });
-      await handleMicrosoft({ accessToken: response.accessToken });
+      await handleAuth({ credential: response.accessToken }, "microsoft");
     } catch (e) {
       console.error("Error during Microsoft login:", e);
-      
+      toast.error("Microsoft login failed");
     }
   };
-
-  console.log("Access Token:", accessToken);
 
   useEffect(() => {
     if (window.google) {
       window.google.accounts.id.initialize({
         client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID as string,
-        callback: handleGoogle,
+        callback: (response: any) => handleAuth({ credential: response.credential }, "google"),
       });
 
       window.google.accounts.id.renderButton(
         document.getElementById("loginDiv"),
         {
-          theme: "#ffff",
+          theme: "outline",
           text: "continue_with",
           shape: "pill",
           display: "block",
@@ -58,7 +45,8 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
         }
       );
     }
-  }, [handleGoogle]);
+  }, [handleAuth]);
+
 
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);
@@ -153,7 +141,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
         <div
           id="microsoft-signin-button"
           className="text-sm mb-6"
-          onClick={handleLogin}
+          onClick={handleMicrosoftLogin}
         >
           <button
             id="msal-signin"
