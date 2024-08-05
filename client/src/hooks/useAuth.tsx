@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for react-toastify
+import 'react-toastify/dist/ReactToastify.css';
 
-interface GoogleResponse {
+interface AuthResponse {
   credential: string;
 }
 
-interface UseFetchReturn {
+interface UseAuthReturn {
   loading: boolean;
   error: string;
-  handleGoogle: (response: GoogleResponse) => Promise<void>;
+  handleAuth: (response: AuthResponse, provider: "google" | "microsoft") => Promise<void>;
 }
 
-const useFetch = (url: string): UseFetchReturn => {
+const useAuth = (url: string): UseAuthReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleGoogle = async (response: GoogleResponse): Promise<void> => {
+  const handleAuth = async (response: AuthResponse, provider: "google" | "microsoft"): Promise<void> => {
+    console.log('hook_data ===>', response, provider)
     setLoading(true);
     try {
       const res = await fetch(url, {
@@ -26,18 +27,18 @@ const useFetch = (url: string): UseFetchReturn => {
         },
         body: JSON.stringify({
           credential: response.credential,
-          provider: "google",
+          provider,
         }),
       });
 
-      setLoading(false);
       const data = await res.json();
+      setLoading(false);
 
-      if (data?.user) {
-        sessionStorage.setItem("user", JSON.stringify(data.user)); // Store in sessionStorage
+      if (res.ok && data?.user) {
+        sessionStorage.setItem(`${provider}_user`, JSON.stringify(data.user)); // Store in sessionStorage
         window.location.reload();
       } else {
-        throw new Error(data?.message || data);
+        throw new Error(data?.message || "Authentication failed");
       }
     } catch (error: any) {
       setLoading(false);
@@ -46,7 +47,7 @@ const useFetch = (url: string): UseFetchReturn => {
     }
   };
 
-  return { loading, error, handleGoogle };
+  return { loading, error, handleAuth };
 };
 
-export default useFetch;
+export default useAuth;
