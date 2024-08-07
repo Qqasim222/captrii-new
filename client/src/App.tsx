@@ -32,15 +32,15 @@ const App: React.FC = () => {
       <Routes>
         <Route
           path="/"
-          element={<Navigate to="/login" />}
+          element={<Navigate to="/logon" />}
         />
         <Route
-          path="/login"
+          path="/logon"
           element={user?.email ? <Navigate to="/home" /> : <Login />}
         />
         <Route
           path="/home"
-          element={user?.email ? <Home user={user} /> : <Navigate to="/login" />}
+          element={user?.email ? <Home user={user} /> : <Navigate to="/logon" />}
         />
       </Routes>
     </BrowserRouter>
